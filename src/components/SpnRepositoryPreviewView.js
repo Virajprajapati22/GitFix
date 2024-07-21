@@ -55,11 +55,7 @@ const SpnRepositoryPreviewView = ({
         </div>
       ) : (
         <div className="more_info ">
-
           <div className="top_content">
-
-
-
             <h3> {currRepo?.name} </h3>
             {currRepo?.description && (
               <p className="text-600">

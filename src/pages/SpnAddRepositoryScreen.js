@@ -130,8 +130,8 @@ const SpnAddRepositoryScreen = (props) => {
                   <div className="content_box">
                     <h2 className="text-primary "> Add new repository</h2>
                     <p className="des2 text-body">
-                    Once you define your repository on Spander, a corresponding linked repository will be created on GitHub.
-                    You can then plan your project on Spander from an abstract level down to specific tasks, which can be converted 
+                    Once you define your repository on GitFix, a corresponding linked repository will be created on GitHub.
+                    You can then plan your project on GitFix from an abstract level down to specific tasks, which can be converted
                     into your GitHub repository as issues
                     </p>
 
