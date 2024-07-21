@@ -182,10 +182,20 @@ const SpnRepositoriesScreen = (props) => {
   );
 
   useEffect(() => {
+    const token = getToken();
+    if (!token) {
+      navigate('/login', { replace: true })
+      console.log("Please Login with github first! [SPN REPOSITORIES SCREEN]");
+    }
+  }, []);
+
+  useEffect(() => {
     const getUsers = async () => {
-      if (!state.userData) {
+      if(!state?.userData) {
         const data = await getUserDetails();
-        dispatch(setLoginUserDetails({ ...user, data: data }));
+        if (data) {
+          dispatch(setLoginUserDetails({ ...user, isLoggedIn: true, data: data }));
+        }
       }
     };
     getUsers();
@@ -196,20 +206,15 @@ const SpnRepositoriesScreen = (props) => {
   function openModal() {
     setShowModal(true);
   }
-  const octokit = new Octokit({
-    auth: getToken()
-  })
-  useEffect(() => {
-    const token = getToken()
-    if (!token) {
-      navigate('/login', { replace: true })
-    }
-  }, [])
+
   useEffect(() => {
     setLengthOfRepos(reposList.filter(filterData)?.length)
   }, [searchVal, ownerFilterItem])
 
   useEffect(() => {
+    const octokit = new Octokit({
+      auth: getToken()
+    })
     const loadRepositories = async () => {
       const data = await getAllRepositories();
 
@@ -220,7 +225,7 @@ const SpnRepositoriesScreen = (props) => {
         setOrgs(orgs?.data)
         dispatch(setOrgsDetails({ orgData: orgs?.data }))
       }
-      setCurrUser(state.userData)
+      setCurrUser(state?.userData)
       dispatch(setRepositories(data));
       setAllRepositories(data);
       setSelectedRepo(data[0])
@@ -254,7 +259,7 @@ const SpnRepositoriesScreen = (props) => {
         <SpnNoRepositoriesView />
       ) : (
         <>
-          <SpnTopBar />
+          <SpnTopBar userData={currUser} />
           <section className="repositories_Data">
             <Container>
               <Row>

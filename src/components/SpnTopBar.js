@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Navbar, Nav, Container, Offcanvas, Dropdown } from "react-bootstrap";
 import logo from "../assets/images/logo.svg";
 import { Link } from "react-router-dom";
@@ -7,9 +7,18 @@ import { useSelector } from "react-redux";
 import logoutHandler from "../utils/logoutHandler";
 
 const SpnTopBar = (props) => {
-  const state = useSelector(
-    (state) => state.loginUserDetailsSlice.loginUserDetails
-  );
+
+  // const { userData } = props;
+
+  const [userData, setCurUser] = useState(null);
+
+  useEffect(() => {
+    const user = localStorage.getItem("user");
+    if(user) {
+      let parsedUser = JSON.parse(user);
+      setCurUser(parsedUser?.data);
+    }
+  }, [props])
 
   return (
     <>
@@ -19,7 +28,9 @@ const SpnTopBar = (props) => {
           expand={expand}
           className="bg-blue-100 border-0 header"
         >
-          <Container fluid>
+          <Container fluid style={{
+            maxHeight: "3em"
+          }}>
             <Navbar.Brand href="/">
               {" "}
               <img src={logo} alt="logo" />
@@ -41,31 +52,27 @@ const SpnTopBar = (props) => {
                   <Link to="/repositories" className="spn-link">
                     Repositories
                   </Link>
-                  <Link
-                    className="spn-link"
-                    onClick={() =>
-                      alert("Display SpnDropdownMenu for support sections")
-                    }
-                  >
-                    Support
+                  <Link to="/addrepository" className="Repository">
+                    Create Repository
                   </Link>
-                  <SpnDropdownMenu />
+                  
+                  {/* <SpnDropdownMenu /> */}
                 </Nav>
                 <Nav className="align-items-center">
-                  <Link to="/addrepository" className="Repository">
+                  {/* <Link to="/addrepository" className="Repository">
                     New Repository
-                  </Link>
+                  </Link> */}
                   <Link
                     className="user"
 
                   >
                     <span className="text-secondary">
-                      {state?.userData?.login ?? state?.userData?.name}
+                      {userData?.login ?? userData?.name}
                     </span>
 
                     <Dropdown className="user_details">
                       <Dropdown.Toggle variant="success" id="dropdown-basic">
-                        <img src={state?.userData?.avatar_url} alt="user" />
+                        <img src={userData?.avatar_url} alt="user" />
                       </Dropdown.Toggle>
 
                       <Dropdown.Menu>
@@ -82,10 +89,7 @@ const SpnTopBar = (props) => {
                             </defs>
                           </svg>
                         </i><span>
-
-                            {state?.userData?.login ?? state?.userData?.name}
-
-
+                            {userData?.login ?? userData?.name}
                           </span>
 
                           <i className="cheron_top"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">

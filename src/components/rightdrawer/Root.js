@@ -9,24 +9,29 @@ import { Link } from "react-router-dom";
 
 
 
-const Root = ({ currRepository, handleCloseRightIssueTab }) => {
+const Root = ({ currRepository, handleCloseRightIssueTab, setIssueMenuOpen, setOpenReadME }) => {
   const [readme, setReadme] = useState(null);
   const [isLoading, setLoading] = useState(true);
 
   useEffect(() => {
     const getReadme = async () => {
-      let userData = await getReadmeDetails({ currRepository });
-      setLoading(false);
-      setReadme(userData?.data);
+      try{
+        let userData = await getReadmeDetails({ currRepository });
+        setLoading(false);
+        setReadme(userData?.data);
+      }catch(err) {
+        setLoading(false);
+        setReadme(null);
+      }
     };
     getReadme();
   }, [currRepository]);
 
-  useEffect(() => {
-    if (readme == null) {
-      setLoading(false);
-    }
-  }, [readme]);
+  // useEffect(() => {
+  //   if (readme == null) {
+  //     setLoading(false);
+  //   }
+  // }, [readme]);
 
   return (
     <>
@@ -43,7 +48,7 @@ const Root = ({ currRepository, handleCloseRightIssueTab }) => {
               <img src={edit} alt="edit" />
             </a>
           </button>
-          <button onClick={handleCloseRightIssueTab}>
+          <button onClick={() => setOpenReadME(false)}>
             {" "}
             <img src={close} alt="close" />{" "}
           </button>

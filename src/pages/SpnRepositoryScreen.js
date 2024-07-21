@@ -13,14 +13,21 @@ const SpnRepositoryScreen = (props) => {
   const { id } = params;
   const [currRepository, setCurrRepository] = useState({});
   const [collaborators, setCollaborators] = useState(null);
+  const [curUser, setCurUser] = useState(null);
   const navigate = useNavigate()
-  useEffect(()=>{
-    const token = getToken()
-    if(!token){
-      navigate('/login', { replace : true})
-    }
-  },[])
+
   useEffect(() => {
+    const token = getToken()
+    if (!token) {
+      navigate('/login', { replace: true })
+    }
+
+    const userData = localStorage.getItem("user");
+    if (userData) {
+      const parsedData = JSON.parse(userData);
+      setCurUser(parsedData?.data);
+    }
+    
     const loadRepositories = async () => {
       const res = await getAllRepositories();
       let currRepo = res.find((repo) => repo.id == id);
@@ -31,31 +38,24 @@ const SpnRepositoryScreen = (props) => {
 
   useEffect(() => {
     const loadCollaborators = async () => {
-      if (currRepository) {
-        let collaborators = await getRepositoryCollaborators({
-          owner: currRepository?.owner?.login,
-          repo: currRepository?.name,
-        });
-        setCollaborators(collaborators?.data);
+      if (currRepository?.owner?.login && currRepository?.name) {
+        let collaborators = await getRepositoryCollaborators({ owner:currRepository?.owner?.login, repo:currRepository?.name});
+        setCollaborators(collaborators);
+        
       }
     };
     loadCollaborators();
   }, [currRepository]);
 
-  console.log(id, currRepository, collaborators, "[COLLABORATORS]");
-
-  console.log(`Repository Name: ${currRepository?.name}`);
-  console.log(`Description: ${currRepository?.description}`);
-
   return (
     <>
-      <SpnTopBar />
+      <SpnTopBar userData={curUser}/>
       {/* The SpnTreeModelView takes all the screen and is centered, the tree view width shuld be 100% but the CLI should be about 50% or leff */}
       <SpnTreeModelView currRepository={currRepository}/>
       {/* Members view should be at the left side to the CLI and the bottom */}
-      <SpnRepositoryMembers collaborators={collaborators} />
+      {collaborators && <SpnRepositoryMembers collaborators={collaborators} />}
       {/* Req description   view should be at the right side to the CLI and the bottom */}
-      <SpnReqDescriptionView currRepository={currRepository} />
+      {/* <SpnReqDescriptionView currRepository={currRepository} /> */}
     </>
   );
 };

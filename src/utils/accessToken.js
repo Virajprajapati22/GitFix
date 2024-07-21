@@ -1,9 +1,5 @@
 export const getToken = () => {
-    const localItems = localStorage.getItem("user")
-    const { accesToken } = JSON.parse(localItems)??{};
+    const localItems = localStorage.getItem("user-accessToken")
 
-    return accesToken
+    return JSON.parse(localItems) ?? {};
 }
-
-
-

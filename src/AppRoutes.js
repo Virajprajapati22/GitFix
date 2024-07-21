@@ -23,7 +23,7 @@ const AppRoutes = () => {
   useEffect(() => {
     // check if user did authentication with Github;
   }, []);
-
+  
   return (
     <Routes>
       {/* Home page redirects to Design page, should be changed later */}
@@ -33,11 +33,9 @@ const AppRoutes = () => {
           <Navigate
             replace
             to={
-              process.env.NODE_ENV === "development"
-                ? "/design"
-                : loginUserDetails?.isLoggedIn
-                  ? "/repositories"
-                  : "/login"
+              loginUserDetails?.isLoggedIn
+                ? "/repositories"
+                : "/login"
             }
           />
         }

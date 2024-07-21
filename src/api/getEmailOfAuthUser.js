@@ -1,17 +1,25 @@
-import { Octokit } from "@octokit/core"
-import { getToken } from "../utils/accessToken"
+import { Octokit } from "@octokit/rest";
+import { getToken } from "../utils/accessToken";
 
-export const getEmailOfAuthUser = async() => {
+export const getEmailOfAuthUser = async () => {
+  return new Promise(async (resolve, reject) => {
+    const octokit = new Octokit({
+      auth: `Bearer ${getToken()}`,
+    });
 
-    return new Promise(async(resolve, reject) => {
-        const octokit = new Octokit({
-        auth: getToken()
-      })
-        const userEmail = await octokit.request('GET /user/public_emails')
+    try {
+        const userEmail = await octokit.rest.users.listPublicEmailsForAuthenticatedUser({
+        visibility: 'all'
+      });
 
-        if(!userEmail){
-            reject(new Error("Error!"))
-        }
-        resolve(userEmail?.data)
-    })
-}
+      if (!userEmail) {
+        reject(new Error("Error fetching user email!"));
+      } else {
+        resolve(userEmail.data);
+      }
+    } catch (err) {
+      console.error(err);
+      reject(err);
+    }
+  });
+};

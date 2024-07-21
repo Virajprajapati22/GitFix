@@ -1,88 +1,64 @@
-import React, { useEffect } from "react";
-import { Button, Row, Container, Col } from "react-bootstrap";
+import React from "react";
+import { Row, Container, Col } from "react-bootstrap";
 import login from "../assets/images/login.svg";
-import spandericon from "../assets/images/icon.svg";
+import logo from "../assets/images/logo.svg";
 import giticon from "../assets/images/git.svg";
-import {
-  getGithubClientID,
-  getLoginToGithubURL,
-} from "../hooks/getGithubLoginURL";
-import SpnLoginPopup from "../components/SpnLoginPopup";
-import { useLocation, useNavigate } from "react-router-dom";
-import { getToken } from "../utils/accessToken";
-import { jsonToObj } from "../utils/json-utils";
+import { useNavigate } from "react-router-dom";
+import { signInWithPopup } from "firebase/auth";
+import { auth, githubProvider } from "../components/firebase-auth";
 
 const SpnLoginScreen = (props) => {
-  const user = localStorage.getItem('user')
   const navigate = useNavigate()
-  const onClose = () => console.log("closed!");
-  const onCode = (code, location) => {
-    if(code){
-      navigate(location.pathname)
-    }
-  };
-  const loc = useLocation();
-  const onError = (error) => {
-    // console.log("\n[ERROR] Login error:",error)
-  };
 
-  useEffect(() => {
-    if(jsonToObj(user)) {
-      navigate('/repositories')
-    }
-  }, [])
+  const handleGithubLogin = async () => {
+    signInWithPopup(auth, githubProvider)
+      .then((result) => {
+        localStorage.setItem("user-accessToken", JSON.stringify(result?._tokenResponse?.oauthAccessToken));
+        navigate(`/repositories`, { state: { skipAuth: true }, replace: true })
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
 
   return (
-  <>
-    <section className="multi_colums py-3 ">
-      <Container>
-        <Row className="row  align-items-md-center">
-          <Col sm={6}>
-            <div className="content_box">
-              <img src={spandericon} alt="spander icon" />
-              <h2 className="text-primary ">Sign in with Github</h2>
-              <p className="des text-body">
-                Lorem Ipsum is simply dummy text of the printing and typesetting
-                industry. Lorem Ipsum has been the{" "}
-              </p>
-              <p className="des2 text-body">
-                By signing up, I agree to Spander{" "}
-                <a href="/terms"> Terms of Service</a> and
-                <a href="/policy"> Privacy Policy</a>.
-              </p>
-              
-              <SpnLoginPopup
-                url={getLoginToGithubURL()}
-                onCode={onCode}
-                onClose={onClose}
-                onError={onError}
-              >
+    <>
+      <section className="multi_colums py-3 ">
+        <Container>
+          <Row className="row  align-items-md-center">
+            <Col sm={6}>
+              <div className="content_box">
+                <img src={logo} alt="spander icon" />
+                <h2 className="text-primary ">Sign in with Github</h2>
+                <p className="des text-body">
+                  Effortlessly manage your GitHub issues with enhanced readability and comfort.{" "}
+                </p>
+                <p className="des2 text-body">
+                  By signing up, I agree to GitFix{" "}
+                  <a href="/terms"> Terms of Service</a> and
+                  <a href="/policy"> Privacy Policy</a>.
+                </p>
                 <a
-                variant="dark"
-                className="signin bg-dark text-white"
-                // to={`https://github.com/login/oauth/authorize?client_id=${getGithubClientID()}`}
-                // href={getLoginToGithubURL()}
-              > 
-                <img src={giticon} alt="git icon" />
-                <span>Sign in with GitHub</span>
-              </a>
-              </SpnLoginPopup>
-              {/* <a
-                // target={"_blank"} rel="noreferrer"
-                href={getLoginToGithubURL()}
-              >
-                test- click here
-              </a> */}
-            </div>
-          </Col>
+                  variant="dark"
+                  className="signin bg-dark text-white"
+                  // to={`https://github.com/login/oauth/authorize?client_id=${getGithubClientID()}`}
+                  // href={getLoginToGithubURL()}
+                  onClick={handleGithubLogin}
+                >
+                  <img src={giticon} alt="git icon" />
+                  <span>Sign in with GitHub</span>
+                </a>
+              </div>
+            </Col>
 
-          <Col sm={6}>
-            <img src={login} alt="login" className="right_img" />
-          </Col>
-        </Row>
-      </Container>
-    </section>
-  </>
-)};
+            <Col sm={6}>
+              <img src={login} alt="login" className="right_img" />
+            </Col>
+          </Row>
+        </Container>
+      </section>
+    </>
+  )
+};
 
 export default SpnLoginScreen;

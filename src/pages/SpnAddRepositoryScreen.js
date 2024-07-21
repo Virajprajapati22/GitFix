@@ -29,7 +29,6 @@ const SpnAddRepositoryScreen = (props) => {
     (state) => state.loginUserDetailsSlice.loginUserDetails
   );
   const repositoryState = useSelector(state => state.allRepositorySlice.repositories)
-  // console.log(repositoryState);
   const dispatch = useDispatch();
   const [validated, setValidated] = useState(false);
   const [isSubmitted, setSubmitted] = useState(false);

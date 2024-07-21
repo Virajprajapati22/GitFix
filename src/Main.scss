@@ -22,8 +22,9 @@ body::-webkit-scrollbar-thumb {
     }
 
     .Repository {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
         background-color: $primary;
-        padding: 4px 8px;
+        padding: 9px 8px;
         color: #fff !important;
         border-radius: 3.2px;
         font-size: 14px;

@@ -2,7 +2,7 @@ import { Octokit } from "@octokit/core"
 import { getToken } from "../utils/accessToken"
 import { getContentOfRepository } from "./getContentOfRepository"
 import { getEmailOfAuthUser } from "./getEmailOfAuthUser"
-export const FILE_PATH = 'SpanderApp/treeNode.txt'
+    const FILE_PATH = 'treeNode.txt'
 
 export const postContentToRepository = async ({currRepository, user, base64Content}) => {
 
@@ -27,18 +27,15 @@ export const postContentToRepository = async ({currRepository, user, base64Conte
 }
 
 export const updatContent = ({currRepository, user, base64Content, sHA}) => {
-    console.log(user, "[USER]");
-
     return new Promise(async (resolve, reject) => {
         const octokit = new Octokit({
             auth: getToken()
         })
-        let response
+        let response = null;
         let userEmail = await getEmailOfAuthUser();
-
         const authEmail = userEmail.find(i => i?.primary == true)
         
-        if(authEmail.email) {
+        if(authEmail?.[0]?.email) {
             response = await octokit.request('PUT /repos/{owner}/{repo}/contents/{path}', {
                 owner: currRepository?.owner?.login,
                 repo: currRepository?.name,
