@@ -1,6 +1,5 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
 import "firebase/auth";
 import { GithubAuthProvider, getAuth } from "firebase/auth";
 // TODO: Add SDKs for Firebase products that you want to use
@@ -9,13 +8,13 @@ import { GithubAuthProvider, getAuth } from "firebase/auth";
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-    apiKey: "AIzaSyBcMQK9sPhtG1NK5X--EAQc4HQQEmHQcHU",
-    authDomain: "gitfix-29190.firebaseapp.com",
-    projectId: "gitfix-29190",
-    storageBucket: "gitfix-29190.appspot.com",
-    messagingSenderId: "357979293743",
-    appId: "1:357979293743:web:f71e38792506a6b18a5eda",
-    measurementId: "G-GH9BRJQPBN"
+    apiKey: process.env.REACT_APP_API_KEY,
+    authDomain: process.env.REACT_APP_AUTH_DOMAIN,
+    projectId: process.env.REACT_APP_PROJECT_ID,
+    storageBucket: process.env.REACT_APP_STORAGE_BUCKET,
+    messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID,
+    appId: process.env.REACT_APP_APP_ID,
+    measurementId: process.env.REACT_APP_MEASUREMENT_ID
 };
 
 // Initialize Firebase
